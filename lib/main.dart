@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import 'package:weather_m/screens/home_screen.dart';
 import 'package:weather_m/screens/splash_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final bool isSkipPressed = await _checkSkipStatus();
+
+  runApp(MyApp(isSkipPressed: isSkipPressed));
+}
+
+//check if the skip button is already pressed
+
+Future<bool> _checkSkipStatus() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('skipPressed') ?? false;
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isSkipPressed;
 
-  // This widget is the root of your application.
+  const MyApp({super.key, required this.isSkipPressed});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      home: isSkipPressed ? const HomeScreen() : const SplashScreen(),
     );
   }
 }

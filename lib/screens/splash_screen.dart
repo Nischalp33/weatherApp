@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_m/utils/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_screen.dart';
 
@@ -14,14 +15,43 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _isSkipPressed = false;
   @override
   void initState() {
     super.initState();
+    _checkSkipStatus(); // Check if skip was pressed before
+
     //5 seconds timer for the splash screen
     Timer(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      if (!_isSkipPressed) {
+        _navigateToHome();
+      }
     });
+  }
+
+//check spik button status
+  Future<void> _checkSkipStatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isSkipPressed = prefs.getBool('skipPressed') ?? false;
+    });
+    if (_isSkipPressed) {
+      _navigateToHome();
+    }
+  }
+
+//navigate to homeScreen
+  Future<void> _navigateToHome() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }
+
+//set the skip button
+  Future<void> _setSkipPressed() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('skipPressed', true);
   }
 
   @override
@@ -63,11 +93,9 @@ class _SplashScreenState extends State<SplashScreen> {
                       SizedBox(
                         width: width * .6,
                         child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HomeScreen()));
+                            onPressed: () async {
+                              await _setSkipPressed(); // Save the skip button state
+                              _navigateToHome();
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
