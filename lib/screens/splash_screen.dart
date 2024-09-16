@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     _checkSkipStatus(); // Check if skip was pressed before
 
     //5 seconds timer for the splash screen
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-//check spik button status
+//check skip button status
   Future<void> _checkSkipStatus() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {

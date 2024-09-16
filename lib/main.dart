@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'package:weather_m/provider/location_provider.dart';
 import 'package:weather_m/screens/home_screen.dart';
 import 'package:weather_m/screens/splash_screen.dart';
 
@@ -24,12 +26,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark(
+          useMaterial3: true,
+        ),
+        home: isSkipPressed ? const HomeScreen() : const SplashScreen(),
       ),
-      home: isSkipPressed ? const HomeScreen() : const SplashScreen(),
     );
   }
 }
