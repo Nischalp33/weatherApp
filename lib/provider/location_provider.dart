@@ -39,7 +39,6 @@ class LocationProvider with ChangeNotifier {
 
       // Get the current latitude and longitude
       Position position = await Geolocator.getCurrentPosition();
-      log('Current Position: ${position.toString()}');
 
       _latitude = position.latitude;
       _longitude = position.longitude;
@@ -57,6 +56,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
+//load the saved location of the user
   Future<void> loadSavedLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _latitude = prefs.getDouble('latitude');

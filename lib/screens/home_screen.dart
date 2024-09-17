@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather_m/screens/splash_screen.dart';
@@ -51,7 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // Save the user location to shared preferences
   Future<void> _saveUserLocation(String location) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('location', location); // Store the new location
+    // Store the new location
+    prefs.setString('location', location);
 
     setState(() {
       userLocation = location;
@@ -100,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Loading Location'),
+                Text('Loading your device location'),
                 CircularProgressIndicator(),
               ],
             ))
@@ -135,10 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final location = searchController.text;
                                 if (location.isNotEmpty) {
                                   FocusScope.of(context).unfocus();
+                                  // Save location
                                   await _saveUserLocation(location);
                                   setState(() {});
-
-                                  // Save location
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -161,7 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     FutureBuilder(
-                      future: ApiMethods().getWeather(userLocation != null &&
+                      future: ApiMethods(Client()).getWeather(userLocation !=
+                                  null &&
                               userLocation!.isNotEmpty
                           ? userLocation!
                           : '${locationProvider.latitude},${locationProvider.longitude}'),

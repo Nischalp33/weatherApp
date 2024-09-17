@@ -5,6 +5,8 @@ import 'package:weather_m/model/WeatherModel.dart';
 
 class ApiMethods {
   String apiKey = "fa2f46d3b54840a195e80818241609";
+  final http.Client client;
+  ApiMethods(this.client);
 
   //method to fetch weather data
 
@@ -13,7 +15,7 @@ class ApiMethods {
         "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$location";
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await client.get(Uri.parse(url));
       final body = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
@@ -22,7 +24,7 @@ class ApiMethods {
         throw Exception('Failed to load weather data');
       }
     } catch (e) {
-      return null;
+      throw Exception('Failed to load weather data: $e');
     }
   }
 }

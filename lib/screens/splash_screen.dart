@@ -16,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isSkipPressed = false;
+  Timer? _timer;
   @override
   void initState() {
     super.initState();
@@ -23,11 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkSkipStatus(); // Check if skip was pressed before
 
     //5 seconds timer for the splash screen
-    Timer(const Duration(seconds: 5), () {
+    _timer = Timer(const Duration(seconds: 5), () {
       if (!_isSkipPressed) {
         _navigateToHome();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed
+    _timer?.cancel();
+    super.dispose();
   }
 
 //check skip button status
