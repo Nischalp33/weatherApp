@@ -60,6 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+//when user submit the value
+  void _handleSubmit(String location) async {
+    if (location.isNotEmpty) {
+      FocusScope.of(context).unfocus();
+      await _saveUserLocation(location);
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -125,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
+                            onSubmitted: _handleSubmit,
                           ),
                         ),
                         SizedBox(
@@ -135,12 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ElevatedButton(
                               onPressed: () async {
                                 final location = searchController.text;
-                                if (location.isNotEmpty) {
-                                  FocusScope.of(context).unfocus();
-                                  // Save location
-                                  await _saveUserLocation(location);
-                                  setState(() {});
-                                }
+                                _handleSubmit(location);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
